@@ -5,10 +5,24 @@ import javax.swing.*;
 import java.util.Observer;
 import java.util.Observable;
 
+/**
+ * View model part of MVC.
+ * View represents the visual representation of the data from the 'Model'.
+ * 'Controller' manages user interactions and updates between the Model and View
+ * This is responsible for creating and managing the graphical user interface (GUI) for the application
+ * 
+ * 
+ * @author Lee Devine
+ */
+
 public class View implements Observer {
     
     ClockPanel panel;
     
+    /**
+     *
+     * @param model
+     */
     public View(Model model) {
         JFrame frame = new JFrame();
         panel = new ClockPanel(model);
@@ -49,6 +63,12 @@ public class View implements Observer {
         frame.setVisible(true);
     }
     
+    /**
+     * Update the view with the new alarm information
+     * 
+     * @param o
+     * @param arg
+     */
     public void update(Observable o, Object arg) {
         panel.repaint();
     }

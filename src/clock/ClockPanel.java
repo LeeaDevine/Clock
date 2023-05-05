@@ -6,16 +6,30 @@ import java.awt.geom.*;
 import java.awt.font.*;
 import javax.swing.*;
 
+/**
+ * 
+ * @author Lee Devine
+ */
+
 public class ClockPanel extends JPanel {
     
     Model model;
     
+    /**
+     *
+     * @param m
+     */
     public ClockPanel(Model m) {
         model = m;
         setPreferredSize(new Dimension(200, 200));
         setBackground(Color.white);
     }
     
+    /**
+     *
+     * @param g
+     */
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
@@ -73,8 +87,8 @@ public class ClockPanel extends JPanel {
             double height = msgbounds.getHeight();
             double width = msgbounds.getWidth();
             
-            gg.drawString(s, (new Float(x1 - width/2)).floatValue(), 
-                          (new Float(y1 + height/2 - descent)).floatValue());
+            gg.drawString(s, (Float.valueOf((float) (x1 - width/2))),
+                    (Float.valueOf((float) (y1 + height/2 - descent))));
         }
         
         // Draw the hour hand
