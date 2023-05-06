@@ -87,4 +87,9 @@ public class Alarm {
         return this.hour == currentHour && this.minute == currentMinute && this.second == currentSecond;
     }
     
+    @Override
+    public String toString() {
+        return String.format("%02d:%02d", hour, minute);
+    }
+    
 }

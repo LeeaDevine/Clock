@@ -3,6 +3,10 @@ package clock;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import javax.swing.*;
 import java.util.Observer;
 import java.util.Observable;
@@ -24,7 +28,7 @@ public class View implements Observer {
      *
      * @param model
      */
-    public View(Model model) {
+    public View(final Model model) {
         //Create a new JFrame to display the clock.
         JFrame frame = new JFrame();
         
@@ -35,7 +39,9 @@ public class View implements Observer {
         frame.setTitle("Alarm Clock");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        //Create MenuBar
+        /**
+         *      //Create MenuBar
+         */
         JMenuBar menuBar = new JMenuBar();
         
         //Create AlarmMenu
@@ -47,17 +53,69 @@ public class View implements Observer {
         JMenuItem editAlarm = new JMenuItem("Edit Alarm");
         JMenuItem deleteAlarm = new JMenuItem("Delete Alarm");
         
+        //TODO: Add action listeners for menu items
+        addAlarm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Display a dialog box to input the alarm time
+                String alarmTime = JOptionPane.showInputDialog("Enter alarm time(HH:mm)");
+                
+                if(alarmTime == null){
+                    return;
+                }
+                
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+                Date parseDate;
+                try{
+                    parseDate = timeFormat.parse(alarmTime);
+                } catch (ParseException ex){
+                    JOptionPane.showMessageDialog(null, "Invalid time format. Please enter the time as HH:mm");
+                    return;
+                }
+                
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(parseDate);
+                int alarmHour = calendar.get(Calendar.HOUR_OF_DAY);
+                int alarmMinute = calendar.get(Calendar.MINUTE);
+                
+                //TODO:: Create logic for priority of alarms
+                Alarm newAlarm = new Alarm(alarmHour, alarmMinute, 0);
+                model.getAlarmManager().addAlarm(newAlarm, 1);
+                JOptionPane.showMessageDialog(null, "Alarm added successfully");
+                
+                //testing queue content
+                System.out.println("Current Alarm queue: " + model.getAlarmManager().toString());
+            }
+        });
+        
+        editAlarm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //TODO add logic for editing an alarm
+                System.out.println("edit alarm");
+            }
+        });
+        
+        deleteAlarm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //TODO add logic for deleting an alarm
+                System.out.println("delete alarm");
+            }
+        });
+        
+        
         //Add menu items to the Alarms Menu
         alarmsMenu.add(addAlarm);
         alarmsMenu.add(editAlarm);
         alarmsMenu.add(deleteAlarm);
-        
-        //TODO: Add action listeners
 
         //Add menu bar to frame
         frame.setJMenuBar(menuBar);
         
-        // Start of border layout code
+        /**
+         *    // Start of border layout code
+         */
         
         Container pane = frame.getContentPane();
         
