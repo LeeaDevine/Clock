@@ -1,6 +1,8 @@
 package clock;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.util.Observer;
 import java.util.Observable;
@@ -10,7 +12,6 @@ import java.util.Observable;
  * View represents the visual representation of the data from the 'Model'.
  * 'Controller' manages user interactions and updates between the Model and View
  * This is responsible for creating and managing the graphical user interface (GUI) for the application
- * 
  * 
  * @author Lee Devine
  */
@@ -24,41 +25,64 @@ public class View implements Observer {
      * @param model
      */
     public View(Model model) {
+        //Create a new JFrame to display the clock.
         JFrame frame = new JFrame();
+        
+        //Create a ClockPanel and pass the Model to it.
         panel = new ClockPanel(model);
-        //frame.setContentPane(panel);
-        frame.setTitle("Java Clock");
+        
+        //Configure the JFrame properties
+        frame.setTitle("Alarm Clock");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        //Create MenuBar
+        JMenuBar menuBar = new JMenuBar();
+        
+        //Create AlarmMenu
+        JMenu alarmsMenu = new JMenu("Alarms");
+        menuBar.add(alarmsMenu);
+        
+        //Creae menu items for adding, editing and deleting alarms
+        JMenuItem addAlarm = new JMenuItem("Add Alarm");
+        JMenuItem editAlarm = new JMenuItem("Edit Alarm");
+        JMenuItem deleteAlarm = new JMenuItem("Delete Alarm");
+        
+        //Add menu items to the Alarms Menu
+        alarmsMenu.add(addAlarm);
+        alarmsMenu.add(editAlarm);
+        alarmsMenu.add(deleteAlarm);
+        
+        //TODO: Add action listeners
+
+        //Add menu bar to frame
+        frame.setJMenuBar(menuBar);
         
         // Start of border layout code
         
-        // I've just put a single button in each of the border positions:
-        // PAGE_START (i.e. top), PAGE_END (bottom), LINE_START (left) and
-        // LINE_END (right). You can omit any of these, or replace the button
-        // with something else like a label or a menu bar. Or maybe you can
-        // figure out how to pack more than one thing into one of those
-        // positions. This is the very simplest border layout possible, just
-        // to help you get started.
-        
         Container pane = frame.getContentPane();
         
-        JButton button = new JButton("Button 1 (PAGE_START)");
+        JButton button = new JButton("Menu Bar");
         pane.add(button, BorderLayout.PAGE_START);
-         
+        
+        //Add the ClockPanel to the JFrame's content pane
         panel.setPreferredSize(new Dimension(200, 200));
         pane.add(panel, BorderLayout.CENTER);
          
-        button = new JButton("Button 3 (LINE_START)");
-        pane.add(button, BorderLayout.LINE_START);
-         
-        button = new JButton("Long-Named Button 4 (PAGE_END)");
-        pane.add(button, BorderLayout.PAGE_END);
-         
-        button = new JButton("5 (LINE_END)");
-        pane.add(button, BorderLayout.LINE_END);
+        /**
+         * Alarm Panel Contains:
+         * 
+         * Button:
+         */
+        JButton alarmButton = new JButton("Alarms");
+        JPanel buttonAlarmPanel = new JPanel();
+        buttonAlarmPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonAlarmPanel.add(alarmButton);
+        pane.add(buttonAlarmPanel, BorderLayout.PAGE_END);
+
         
         // End of borderlayout code
         
+        //Pack the components and set the JFrame visible
         frame.pack();
         frame.setVisible(true);
     }
@@ -70,6 +94,7 @@ public class View implements Observer {
      * @param arg
      */
     public void update(Observable o, Object arg) {
+        //Repaint and show updated view
         panel.repaint();
     }
 }

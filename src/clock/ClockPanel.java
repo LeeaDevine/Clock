@@ -7,7 +7,7 @@ import java.awt.font.*;
 import javax.swing.*;
 
 /**
- * 
+ * ClockPanel class responsible for drawing the Clock display
  * @author Lee Devine
  */
 
@@ -16,8 +16,8 @@ public class ClockPanel extends JPanel {
     Model model;
     
     /**
-     *
-     * @param m
+     * Constructor for ClockPanel
+     * @param m The Model instance of the clock application
      */
     public ClockPanel(Model m) {
         model = m;
@@ -26,8 +26,8 @@ public class ClockPanel extends JPanel {
     }
     
     /**
-     *
-     * @param g
+     * Overridden paintComponent method to draw the clock display
+     * @param g The Graphics instance to draw on the panel
      */
     @Override
     public void paintComponent(Graphics g) {
