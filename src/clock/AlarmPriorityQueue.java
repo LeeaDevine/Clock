@@ -52,4 +52,10 @@ public interface AlarmPriorityQueue {
      */
     @Override
     public String toString();
+    
+    /**
+     * 
+     * @return 
+     */
+    public AlarmPriorityItem[] getItems();
 }

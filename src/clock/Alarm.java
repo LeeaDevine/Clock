@@ -7,7 +7,7 @@ package clock;
  * 
  * @author Lee Devine
  */
-public class Alarm {
+public class Alarm implements Comparable<Alarm>{
     
     // Variables representing hour, minute and seconds of the alarm
     private int hour;
@@ -90,6 +90,23 @@ public class Alarm {
     @Override
     public String toString() {
         return String.format("%02d:%02d", hour, minute);
+    }
+    
+    @Override
+    public int compareTo(Alarm other){
+        if(this.hour < other.hour){
+            return -1;
+        } else if(this.hour > other.hour){
+            return 1;
+        } else{
+            if(this.minute < other.minute){
+                return -1;
+            } else if (this.minute > other.minute){
+                return 1;
+            }else {
+                return 0;
+            }
+        }
     }
     
 }

@@ -23,12 +23,16 @@ import java.util.Observable;
 public class View implements Observer {
     
     ClockPanel panel;
+    Model model;
+    JLabel nextAlarmLabel;
     
     /**
      *
      * @param model
      */
     public View(final Model model) {
+        this.model = model;
+        
         //Create a new JFrame to display the clock.
         JFrame frame = new JFrame();
         
@@ -78,11 +82,18 @@ public class View implements Observer {
                 int alarmHour = calendar.get(Calendar.HOUR_OF_DAY);
                 int alarmMinute = calendar.get(Calendar.MINUTE);
                 
-                //TODO:: Create logic for priority of alarms
                 Alarm newAlarm = new Alarm(alarmHour, alarmMinute, 0);
-                model.getAlarmManager().addAlarm(newAlarm, 1);
-                JOptionPane.showMessageDialog(null, "Alarm added successfully");
                 
+                // Calculate the priority based on the alarm's proximity to the current time
+                Calendar currentTime = Calendar.getInstance();
+                long currentTimeMillis = currentTime.getTimeInMillis();
+                long alarmTimeMillis = calendar.getTimeInMillis();
+                
+                int priority = (int) (alarmTimeMillis - currentTimeMillis);
+                
+                model.getAlarmManager().addAlarm(newAlarm);
+                JOptionPane.showMessageDialog(null, "Alarm added successfully");
+                updateNextAlarmLabel();
                 //testing queue content
                 System.out.println("Current Alarm queue: " + model.getAlarmManager().toString());
             }
@@ -113,9 +124,9 @@ public class View implements Observer {
         //Add menu bar to frame
         frame.setJMenuBar(menuBar);
         
-        /**
-         *    // Start of border layout code
-         */
+        
+//-------- Start of border layout code -----------------------------------------
+         
         
         Container pane = frame.getContentPane();
         
@@ -126,23 +137,38 @@ public class View implements Observer {
         panel.setPreferredSize(new Dimension(200, 200));
         pane.add(panel, BorderLayout.CENTER);
          
-        /**
-         * Alarm Panel Contains:
-         * 
-         * Button:
-         */
+//----------- Alarm Panel -----------------------------------------
+        //Create new JLabel for displaying the next alarm in queue
+        nextAlarmLabel = new JLabel("Next Alarm -");
+        
+        // Initialize the nextAlarmLabel with the next alarm information
+        updateNextAlarmLabel();
+        
+        // Call updateNextAlarmLabel() after adding, removing or modifying alarms in the queue
+        // For example, when you create or initialize the AlarmManager, or when you add or remove alarms
+        // ...
         JButton alarmButton = new JButton("Alarms");
         JPanel buttonAlarmPanel = new JPanel();
         buttonAlarmPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         buttonAlarmPanel.add(alarmButton);
+        buttonAlarmPanel.add(nextAlarmLabel);
         pane.add(buttonAlarmPanel, BorderLayout.PAGE_END);
 
         
-        // End of borderlayout code
+//--------- End of borderlayout code -------------------------------------------
         
         //Pack the components and set the JFrame visible
         frame.pack();
         frame.setVisible(true);
+    }
+    
+    public void updateNextAlarmLabel() {
+        Alarm nextAlarm = model.getAlarmManager().getNextAlarm();
+        if (nextAlarm != null) {
+            nextAlarmLabel.setText("Next Alarm: " + nextAlarm.toString());
+        } else {
+            nextAlarmLabel.setText("Next Alarm -");
+        }
     }
     
     /**

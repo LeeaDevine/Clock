@@ -31,6 +31,8 @@ public class Controller {
         listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+//                model.getAlarmManager().addAlarm(newAlarm);
+                
                 model.update();
             }
         };

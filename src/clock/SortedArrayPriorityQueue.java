@@ -1,6 +1,8 @@
 
 package clock;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Leead
@@ -47,7 +49,7 @@ public class SortedArrayPriorityQueue implements AlarmPriorityQueue{
         if(isEmpty()){
             throw new QueueUnderflowException();
         } else {
-            for (int i = 0; i < tailIndex; i++) {
+            for (int i = 0; i <= tailIndex; i++) {
                 storage[i] = storage[i + 1];
             }
             tailIndex--;
@@ -71,5 +73,14 @@ public class SortedArrayPriorityQueue implements AlarmPriorityQueue{
         result = result + "]";
         return result;
     }
+    
+    @Override
+    public AlarmPriorityItem[] getItems() {
+    AlarmPriorityItem[] items = new AlarmPriorityItem[tailIndex + 1];
+    for (int i = 0; i <= tailIndex; i++) {
+        items[i] = (AlarmPriorityItem) storage[i];
+    }
+    return items;
+}
     
 }
