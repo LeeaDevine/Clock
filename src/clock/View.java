@@ -1,12 +1,8 @@
 package clock;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.*;
 import java.util.Observer;
 import java.util.Observable;
@@ -24,6 +20,7 @@ public class View implements Observer {
     
     ClockPanel panel;
     Model model;
+    Controller controller;
     
     private JFrame frame;
     
@@ -34,7 +31,8 @@ public class View implements Observer {
     private JMenuItem editAlarmsMenuItem;
     private JMenuItem removeAlarmsMenuItem;
     
-    private JLabel nextAlarmLabel;
+    private final JLabel nextAlarmLabel;
+    private final JLabel numberOfAlarmsLabel;
     
     private JMenuBar initMenuBar() {
         // Create a menu bar
@@ -99,6 +97,10 @@ public class View implements Observer {
             nextAlarmLabel.setText("Next Alarm: -");
         }
     }
+    
+    public void updateNumberOfAlarmsLabel(int numberOfAlarms){
+        numberOfAlarmsLabel.setText("Number of Alarms: " + numberOfAlarms);
+    }
 
     /**
      *
@@ -108,7 +110,7 @@ public class View implements Observer {
         this.model = model;
         
         //Create a new JFrame to display the clock.
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         
         //Create a ClockPanel and pass the Model to it.
         panel = new ClockPanel(model);
@@ -126,14 +128,40 @@ public class View implements Observer {
         panel.setPreferredSize(new Dimension(200, 200));
         pane.add(panel, BorderLayout.CENTER);
         
-        // Initialize the nextAlarmLabel
-        nextAlarmLabel = new JLabel("Next Alarm: -", SwingConstants.CENTER);
-        // Add the nextAlarmLabel to the JFrame's content pane
-        pane.add(nextAlarmLabel, BorderLayout.SOUTH);
+        //Create the new JLabels with empty strings
+        nextAlarmLabel = new JLabel("");
+        numberOfAlarmsLabel = new JLabel("");
+        
+        //Add the southPanel JPanel to the JFrame
+        pane.add(createSouthPanel(), BorderLayout.SOUTH);
         
         //Pack the components and set the JFrame visible
         frame.pack();
         frame.setVisible(true);
+        
+        //Add window listener
+        attachWindowListener();
+    }
+    
+    public JLabel getNumberOfAlarmsLabel(){
+        return numberOfAlarmsLabel;
+    }
+    
+    public JLabel getNextAlarmLabel(){
+        return nextAlarmLabel;
+    }
+    
+    private JPanel createSouthPanel(){
+        JPanel southPanel = new JPanel(new BorderLayout());
+        
+        //Set the border for the southPanel
+        southPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        
+        //Add the JLabels to the southPanel with BorderLayout constraints
+        southPanel.add(numberOfAlarmsLabel, BorderLayout.EAST);
+        southPanel.add(nextAlarmLabel, BorderLayout.WEST);
+        
+        return southPanel;
     }
     
     /**
@@ -148,10 +176,35 @@ public class View implements Observer {
         
         // Update the nextAlarmLabel
         updateNextAlarmLabel(model.getNextAlarm());
+        
+        //Update the numberOfAlarmsLabel
+        updateNumberOfAlarmsLabel(model.getAlarms().size());
     }
     
     public JFrame getFrame(){
         return frame;
     }
-   
+    
+    private void attachWindowListener(){
+        frame.addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent e){
+                int result = JOptionPane.showConfirmDialog(
+                        frame,
+                        "Would you like to save the file before closing program?",
+                        "Save Alarm List",
+                        JOptionPane.YES_NO_CANCEL_OPTION
+                );
+                
+                if(result == JOptionPane.YES_OPTION){
+                    //Call the save method from the controller
+                    controller.saveAlarmsOnExit();
+                }
+            }
+        });
+    }
+
+    void setController(Controller controller) {
+        this.controller = controller;
+    }
 }

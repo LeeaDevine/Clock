@@ -13,6 +13,11 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+/**
+ * Handles iCalendar formats - save and load options
+ * 
+ * @author Lee Devine
+ */
 public class ICalendarHandler {
 
     public ICalendarHandler() {

@@ -2,6 +2,11 @@ package clock;
 
 import java.util.Calendar;
 
+/**
+ * Alarm class deals with object of an alarm
+ * 
+ * @author Lee Devine
+ */
 public class Alarm implements Comparable<Alarm>{
     private Calendar alarmTime;
 

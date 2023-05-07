@@ -31,6 +31,8 @@ public class Controller {
         model = m;
         view = v;
         
+        view.setController(this);
+        
          // Attach action listeners to menu items using anonymous inner classes
         view.getSaveAlarmsMenuItem().addActionListener(new ActionListener() {
             @Override
@@ -113,6 +115,7 @@ public class Controller {
 
         if (newAlarm != null) {
             model.addAlarm(newAlarm);
+            view.updateNumberOfAlarmsLabel(model.getAlarms().size());
         }
     }
     
@@ -128,6 +131,18 @@ public class Controller {
             for (Alarm alarm : loadedAlarms) {
                 model.addAlarm(alarm);
             }
+            view.updateNumberOfAlarmsLabel(model.getAlarms().size());
+        }
+    }
+    
+    public void saveAlarmsOnExit(){
+        JFileChooser fileChooser = new JFileChooser();
+        int returnValue = fileChooser.showSaveDialog(view.getFrame());
+        
+        if(returnValue == JFileChooser.APPROVE_OPTION){
+            File file = fileChooser.getSelectedFile();
+            ICalendarHandler icsHandler = new ICalendarHandler();
+            icsHandler.saveAlarmsToFile(model.getAlarms(), file);
         }
     }
 
@@ -153,6 +168,7 @@ public class Controller {
                             //Remove the triggered alarm and update the next alarm label
                             model.removeAlarm(nextAlarm);
                             view.updateNextAlarmLabel(nextAlarm);
+                            view.updateNumberOfAlarmsLabel(model.getAlarms().size());
                         }
                     }
                     
