@@ -25,6 +25,8 @@ public class View implements Observer {
     ClockPanel panel;
     Model model;
     
+    private JFrame frame;
+    
     // Declare menu items as instance variables
     private JMenuItem saveAlarmsMenuItem;
     private JMenuItem loadAlarmsMenuItem;
@@ -32,24 +34,24 @@ public class View implements Observer {
     private JMenuItem editAlarmsMenuItem;
     private JMenuItem removeAlarmsMenuItem;
     
-    private JMenuBar initMenuBar(){
-        //Create a menu bar
+    private JMenuBar initMenuBar() {
+        // Create a menu bar
         JMenuBar menuBar = new JMenuBar();
-        
-        //Create Menus
+
+        // Create Menus
         JMenu fileMenu = new JMenu("File");
         JMenu alarmsMenu = new JMenu("Alarm");
-        
-        //Create submenus
+
+        // Create submenus
         JMenu fileOperationsMenu = new JMenu("File Operations");
-        
-        //Create Menu items
-        JMenuItem saveAlarmsMenuItem = new JMenuItem("Save");
-        JMenuItem loadAlarmsMenuItem = new JMenuItem("Load");
-        JMenuItem addAlarmMenuItem = new JMenuItem("Add");
-        JMenuItem editAlarmsMenuItem = new JMenuItem("Edit");
-        JMenuItem removeAlarmsMenuItem = new JMenuItem("Remove");
-        
+
+        // Create Menu items (remove type declaration to avoid shadowing)
+        saveAlarmsMenuItem = new JMenuItem("Save");
+        loadAlarmsMenuItem = new JMenuItem("Load");
+        addAlarmMenuItem = new JMenuItem("Add");
+        editAlarmsMenuItem = new JMenuItem("Edit");
+        removeAlarmsMenuItem = new JMenuItem("Remove");
+
         // Add menu items to submenus
         fileOperationsMenu.add(saveAlarmsMenuItem);
         fileOperationsMenu.add(loadAlarmsMenuItem);
@@ -64,8 +66,9 @@ public class View implements Observer {
         menuBar.add(fileMenu);
         menuBar.add(alarmsMenu);
 
-        return menuBar;   
-    }
+        return menuBar;
+        }
+
     
     public JMenuItem getSaveAlarmsMenuItem() {
         return saveAlarmsMenuItem;
@@ -129,4 +132,9 @@ public class View implements Observer {
         //Repaint and show updated view
         panel.repaint();
     }
+    
+    public JFrame getFrame(){
+        return frame;
+    }
+   
 }

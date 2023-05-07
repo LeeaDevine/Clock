@@ -1,6 +1,7 @@
 package clock;
 
 import java.awt.event.*;
+import javax.swing.JFrame;
 import javax.swing.Timer;
 
 /**
@@ -44,6 +45,7 @@ public class Controller {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Add alarm logic
+                showAddAlarmDialog();
             }
         });
 
@@ -71,4 +73,15 @@ public class Controller {
         timer = new Timer(100, listener);
         timer.start();
     }
+    
+    private void showAddAlarmDialog() {
+        JFrame parentFrame = view.getFrame();
+        AlarmDialog alarmDialog = new AlarmDialog(parentFrame);
+        Alarm newAlarm = alarmDialog.showDialog();
+
+        if (newAlarm != null) {
+            model.addAlarm(newAlarm);
+    }
+}
+
 }
