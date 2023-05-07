@@ -24,7 +24,69 @@ public class View implements Observer {
     
     ClockPanel panel;
     Model model;
-    JLabel nextAlarmLabel;
+    
+    // Declare menu items as instance variables
+    private JMenuItem saveAlarmsMenuItem;
+    private JMenuItem loadAlarmsMenuItem;
+    private JMenuItem addAlarmMenuItem;
+    private JMenuItem editAlarmsMenuItem;
+    private JMenuItem removeAlarmsMenuItem;
+    
+    private JMenuBar initMenuBar(){
+        //Create a menu bar
+        JMenuBar menuBar = new JMenuBar();
+        
+        //Create Menus
+        JMenu fileMenu = new JMenu("File");
+        JMenu alarmsMenu = new JMenu("Alarm");
+        
+        //Create submenus
+        JMenu fileOperationsMenu = new JMenu("File Operations");
+        
+        //Create Menu items
+        JMenuItem saveAlarmsMenuItem = new JMenuItem("Save");
+        JMenuItem loadAlarmsMenuItem = new JMenuItem("Load");
+        JMenuItem addAlarmMenuItem = new JMenuItem("Add");
+        JMenuItem editAlarmsMenuItem = new JMenuItem("Edit");
+        JMenuItem removeAlarmsMenuItem = new JMenuItem("Remove");
+        
+        // Add menu items to submenus
+        fileOperationsMenu.add(saveAlarmsMenuItem);
+        fileOperationsMenu.add(loadAlarmsMenuItem);
+
+        // Add submenus and menu items to menus
+        fileMenu.add(fileOperationsMenu);
+        alarmsMenu.add(addAlarmMenuItem);
+        alarmsMenu.add(editAlarmsMenuItem);
+        alarmsMenu.add(removeAlarmsMenuItem);
+
+        // Add menus to menu bar
+        menuBar.add(fileMenu);
+        menuBar.add(alarmsMenu);
+
+        return menuBar;   
+    }
+    
+    public JMenuItem getSaveAlarmsMenuItem() {
+        return saveAlarmsMenuItem;
+    }
+
+    public JMenuItem getLoadAlarmsMenuItem() {
+        return loadAlarmsMenuItem;
+    }
+
+    public JMenuItem getAddAlarmMenuItem() {
+        return addAlarmMenuItem;
+    }
+
+    public JMenuItem getEditAlarmsMenuItem() {
+        return editAlarmsMenuItem;
+    }
+
+    public JMenuItem getRemoveAlarmsMenuItem() {
+        return removeAlarmsMenuItem;
+    }
+
     
     /**
      *
@@ -43,132 +105,18 @@ public class View implements Observer {
         frame.setTitle("Alarm Clock");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        /**
-         *      //Create MenuBar
-         */
-        JMenuBar menuBar = new JMenuBar();
-        
-        //Create AlarmMenu
-        JMenu alarmsMenu = new JMenu("Alarms");
-        menuBar.add(alarmsMenu);
-        
-        //Creae menu items for adding, editing and deleting alarms
-        JMenuItem addAlarm = new JMenuItem("Add Alarm");
-        JMenuItem editAlarm = new JMenuItem("Edit Alarm");
-        JMenuItem deleteAlarm = new JMenuItem("Delete Alarm");
-        
-        //TODO: Add action listeners for menu items
-        addAlarm.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Display a dialog box to input the alarm time
-                String alarmTime = JOptionPane.showInputDialog("Enter alarm time(HH:mm)");
-                
-                if(alarmTime == null){
-                    return;
-                }
-                
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-                Date parseDate;
-                try{
-                    parseDate = timeFormat.parse(alarmTime);
-                } catch (ParseException ex){
-                    JOptionPane.showMessageDialog(null, "Invalid time format. Please enter the time as HH:mm");
-                    return;
-                }
-                
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(parseDate);
-                int alarmHour = calendar.get(Calendar.HOUR_OF_DAY);
-                int alarmMinute = calendar.get(Calendar.MINUTE);
-                
-                Alarm newAlarm = new Alarm(alarmHour, alarmMinute, 0);
-                
-                // Calculate the priority based on the alarm's proximity to the current time
-                Calendar currentTime = Calendar.getInstance();
-                long currentTimeMillis = currentTime.getTimeInMillis();
-                long alarmTimeMillis = calendar.getTimeInMillis();
-                
-                int priority = (int) (alarmTimeMillis - currentTimeMillis);
-                
-                model.getAlarmManager().addAlarm(newAlarm);
-                JOptionPane.showMessageDialog(null, "Alarm added successfully");
-                updateNextAlarmLabel();
-                //testing queue content
-                System.out.println("Current Alarm queue: " + model.getAlarmManager().toString());
-            }
-        });
-        
-        editAlarm.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TODO add logic for editing an alarm
-                System.out.println("edit alarm");
-            }
-        });
-        
-        deleteAlarm.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TODO add logic for deleting an alarm
-                System.out.println("delete alarm");
-            }
-        });
-        
-        
-        //Add menu items to the Alarms Menu
-        alarmsMenu.add(addAlarm);
-        alarmsMenu.add(editAlarm);
-        alarmsMenu.add(deleteAlarm);
-
-        //Add menu bar to frame
-        frame.setJMenuBar(menuBar);
-        
-        
-//-------- Start of border layout code -----------------------------------------
+        //Add the menu bar to the frame
+        frame.setJMenuBar(initMenuBar());
          
-        
         Container pane = frame.getContentPane();
-        
-        JButton button = new JButton("Menu Bar");
-        pane.add(button, BorderLayout.PAGE_START);
         
         //Add the ClockPanel to the JFrame's content pane
         panel.setPreferredSize(new Dimension(200, 200));
         pane.add(panel, BorderLayout.CENTER);
-         
-//----------- Alarm Panel -----------------------------------------
-        //Create new JLabel for displaying the next alarm in queue
-        nextAlarmLabel = new JLabel("Next Alarm -");
-        
-        // Initialize the nextAlarmLabel with the next alarm information
-        updateNextAlarmLabel();
-        
-        // Call updateNextAlarmLabel() after adding, removing or modifying alarms in the queue
-        // For example, when you create or initialize the AlarmManager, or when you add or remove alarms
-        // ...
-        JButton alarmButton = new JButton("Alarms");
-        JPanel buttonAlarmPanel = new JPanel();
-        buttonAlarmPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        buttonAlarmPanel.add(alarmButton);
-        buttonAlarmPanel.add(nextAlarmLabel);
-        pane.add(buttonAlarmPanel, BorderLayout.PAGE_END);
-
-        
-//--------- End of borderlayout code -------------------------------------------
         
         //Pack the components and set the JFrame visible
         frame.pack();
         frame.setVisible(true);
-    }
-    
-    public void updateNextAlarmLabel() {
-        Alarm nextAlarm = model.getAlarmManager().getNextAlarm();
-        if (nextAlarm != null) {
-            nextAlarmLabel.setText("Next Alarm: " + nextAlarm.toString());
-        } else {
-            nextAlarmLabel.setText("Next Alarm -");
-        }
     }
     
     /**

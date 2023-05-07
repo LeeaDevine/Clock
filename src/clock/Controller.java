@@ -17,30 +17,57 @@ public class Controller {
     View view;
     
     /**
-     * Constructor for the Controller class
-     * Sets up the timer and listener for updating the clock model
      * 
-     * @param m The Model instance of the clock application
-     * @param v The View instance of the clock application
+     * @param m
+     * @param v 
      */
     public Controller(Model m, View v) {
         model = m;
         view = v;
         
-        //Create an ActionListener to update the model everytime the timer fires
+         // Attach action listeners to menu items using anonymous inner classes
+        view.getSaveAlarmsMenuItem().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Save alarms logic
+            }
+        });
+
+        view.getLoadAlarmsMenuItem().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Load alarms logic
+            }
+        });
+
+        view.getAddAlarmMenuItem().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Add alarm logic
+            }
+        });
+
+        view.getEditAlarmsMenuItem().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Edit alarms logic
+            }
+        });
+
+        view.getRemoveAlarmsMenuItem().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Remove alarms logic
+            }
+        });
+        
         listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                model.getAlarmManager().addAlarm(newAlarm);
-                
                 model.update();
             }
         };
         
-        /**
-         * Create a timer that fires every 100 millisecond and
-         * attach the listener to it.
-        */
         timer = new Timer(100, listener);
         timer.start();
     }

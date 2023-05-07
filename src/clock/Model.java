@@ -1,7 +1,9 @@
 package clock;
 
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Observable;
+import java.util.PriorityQueue;
 //import java.util.GregorianCalendar;
 
 /**
@@ -16,17 +18,22 @@ public class Model extends Observable {
     int second = 0;
     int oldSecond = 0;
     
-    private AlarmManager alarmManager;
+    private PriorityQueue<Alarm> alarms;
+    
     
     /**
      * Constructor for the Model Class
      * Initializes the Model by updating the current time
      */
     public Model() {
-        // Initialize AlarmManager with a capacity of 5 alarms
-        alarmManager = new AlarmManager(5);
-        
         update();
+        
+        alarms = new PriorityQueue<Alarm>(new Comparator<Alarm>() {
+            @Override
+            public int compare(Alarm a1, Alarm a2) {
+                return a1.getAlarmTime().compareTo(a2.getAlarmTime());
+            }
+        });
     }
     
     /**
@@ -46,17 +53,23 @@ public class Model extends Observable {
             //If the second value has changed, notify the observers
             setChanged();
             notifyObservers();
-            
-            // Check if an alarm is triggered and handle it
-            if (alarmManager.isAlarmTriggered(hour, minute, second)) {
-                System.out.println("Alarm triggered!");
-                // TODO:: logic to handle triggered alarms here, e.g., play a sound
-            }
         }
     }
     
-    public AlarmManager getAlarmManager(){
-        return alarmManager;
+    public void addAlarm(Alarm alarm) {
+    alarms.add(alarm);
+    setChanged();
+    notifyObservers();
+}
+
+    public void removeAlarm(Alarm alarm) {
+        alarms.remove(alarm);
+        setChanged();
+        notifyObservers();
+    }
+
+    public Alarm getNextAlarm() {
+        return alarms.peek();
     }
     
 }

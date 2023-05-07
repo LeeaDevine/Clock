@@ -1,112 +1,39 @@
 
 package clock;
 
+import java.util.Calendar;
+
 /**
  * The Alarm class represents an alarm object,
- * storing the time at which the alarm should be triggered.
  * 
  * @author Lee Devine
  */
-public class Alarm implements Comparable<Alarm>{
+public class Alarm{
     
-    // Variables representing hour, minute and seconds of the alarm
-    private int hour;
-    private int minute;
-    private int second;
-    
-    /**
-     * Constructor that initializes the Alarm object with the given
-     * hour, minute and second
-     * @param hour The hour of the alarm
-     * @param minute The minute of the alarm
-     * @param second  The second of the alarm
-     */
-    public Alarm (int hour, int minute, int second){
-        this.hour = hour;
-        this.minute = minute;
-        this.second = second;
-    }
+     private Calendar alarmTime;
 
     /**
-     * Getter method for the hour of the alarm
-     * @return the hour of the alarm
+     * Constructor
+     *
+     * @param alarmTime
      */
-    public int getHour() {
-        return hour;
+    public Alarm(Calendar alarmTime) {
+        this.alarmTime = alarmTime;
     }
 
-    /**
-     * Setter method for hour of the alarm
-     * @param hour the hour to set for the alarm
-     */
-    public void setHour(int hour) {
-        this.hour = hour;
+    public Calendar getAlarmTime() {
+        return alarmTime;
     }
 
-    /**
-     * Getter method for the minute of the alarm
-     * @return the minute of the alarm
-     */
-    public int getMinute() {
-        return minute;
+    public void setAlarmTime(Calendar alarmTime) {
+        this.alarmTime = alarmTime;
     }
 
-    /**
-     * Setter method for the minute of the alarm
-     * @param minute the minute to set for the alarm
-     */
-    public void setMinute(int minute) {
-        this.minute = minute;
-    }
-
-    /**
-     * Getter method for the second of the alarm
-     * @return the second of the alarm
-     */
-    public int getSecond() {
-        return second;
-    }
-
-    /**
-     * Setter method for the second of the alarm
-     * @param second the second to set for the alarm
-     */
-    public void setSecond(int second) {
-        this.second = second;
-    }
-    
-    /**
-     * Method to check whether the alarm should be triggered, 
-     * based on current time
-     * @param currentHour 
-     * @param currentMinute
-     * @param currentSecond
-     * @return true if the alarm should be triggered, false otherwise
-     */
-    public boolean isTriggered(int currentHour, int currentMinute, int currentSecond){
-        return this.hour == currentHour && this.minute == currentMinute && this.second == currentSecond;
-    }
-    
     @Override
     public String toString() {
-        return String.format("%02d:%02d", hour, minute);
+        int hour = alarmTime.get(Calendar.HOUR_OF_DAY);
+        int minute = alarmTime.get(Calendar.MINUTE);
+        int second = alarmTime.get(Calendar.SECOND);
+        return String.format("%02d:%02d:%02d", hour, minute, second);
     }
-    
-    @Override
-    public int compareTo(Alarm other){
-        if(this.hour < other.hour){
-            return -1;
-        } else if(this.hour > other.hour){
-            return 1;
-        } else{
-            if(this.minute < other.minute){
-                return -1;
-            } else if (this.minute > other.minute){
-                return 1;
-            }else {
-                return 0;
-            }
-        }
-    }
-    
 }
