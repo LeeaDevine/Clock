@@ -1,7 +1,9 @@
 package clock;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Observable;
 import java.util.PriorityQueue;
 //import java.util.GregorianCalendar;
@@ -72,4 +74,14 @@ public class Model extends Observable {
         return alarms.peek();
     }
     
+    public List<Alarm> getAlarms() {
+        return new ArrayList<>(alarms);
+    }
+
+    public void clearAlarms() {
+        alarms.clear();
+        setChanged();
+        notifyObservers();
+    }
+
 }

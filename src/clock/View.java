@@ -34,6 +34,8 @@ public class View implements Observer {
     private JMenuItem editAlarmsMenuItem;
     private JMenuItem removeAlarmsMenuItem;
     
+    private JLabel nextAlarmLabel;
+    
     private JMenuBar initMenuBar() {
         // Create a menu bar
         JMenuBar menuBar = new JMenuBar();
@@ -89,8 +91,15 @@ public class View implements Observer {
     public JMenuItem getRemoveAlarmsMenuItem() {
         return removeAlarmsMenuItem;
     }
-
     
+    public void updateNextAlarmLabel(Alarm nextAlarm) {
+        if (nextAlarm != null) {
+            nextAlarmLabel.setText("Next Alarm: " + nextAlarm.toString());
+        } else {
+            nextAlarmLabel.setText("Next Alarm: -");
+        }
+    }
+
     /**
      *
      * @param model
@@ -117,6 +126,11 @@ public class View implements Observer {
         panel.setPreferredSize(new Dimension(200, 200));
         pane.add(panel, BorderLayout.CENTER);
         
+        // Initialize the nextAlarmLabel
+        nextAlarmLabel = new JLabel("Next Alarm: -");
+        // Add the nextAlarmLabel to the JFrame's content pane
+        pane.add(nextAlarmLabel, BorderLayout.SOUTH);
+        
         //Pack the components and set the JFrame visible
         frame.pack();
         frame.setVisible(true);
@@ -131,6 +145,9 @@ public class View implements Observer {
     public void update(Observable o, Object arg) {
         //Repaint and show updated view
         panel.repaint();
+        
+        // Update the nextAlarmLabel
+        updateNextAlarmLabel(model.getNextAlarm());
     }
     
     public JFrame getFrame(){

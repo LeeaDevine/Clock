@@ -1,22 +1,10 @@
-
 package clock;
 
 import java.util.Calendar;
 
-/**
- * The Alarm class represents an alarm object,
- * 
- * @author Lee Devine
- */
-public class Alarm{
-    
-     private Calendar alarmTime;
+public class Alarm {
+    private Calendar alarmTime;
 
-    /**
-     * Constructor
-     *
-     * @param alarmTime
-     */
     public Alarm(Calendar alarmTime) {
         this.alarmTime = alarmTime;
     }

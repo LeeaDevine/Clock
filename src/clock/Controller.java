@@ -1,6 +1,9 @@
 package clock;
 
 import java.awt.event.*;
+import java.io.File;
+import java.util.List;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
@@ -30,16 +33,36 @@ public class Controller {
         view.getSaveAlarmsMenuItem().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Save alarms logic
+                JFileChooser fileChooser = new JFileChooser();
+                int returnValue = fileChooser.showSaveDialog(view.getFrame());
+
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    ICalendarHandler icsHandler = new ICalendarHandler();
+                    icsHandler.saveAlarmsToFile(model.getAlarms(), file);
+                }
             }
         });
+
 
         view.getLoadAlarmsMenuItem().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Load alarms logic
+                JFileChooser fileChooser = new JFileChooser();
+                int returnValue = fileChooser.showOpenDialog(view.getFrame());
+
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    ICalendarHandler icsHandler = new ICalendarHandler();
+                    List<Alarm> loadedAlarms = icsHandler.loadAlarmsFromFile(file);
+                    model.clearAlarms();
+                    for (Alarm alarm : loadedAlarms) {
+                        model.addAlarm(alarm);
+                    }
+                }
             }
         });
+
 
         view.getAddAlarmMenuItem().addActionListener(new ActionListener() {
             @Override
