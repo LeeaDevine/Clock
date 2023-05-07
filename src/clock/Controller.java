@@ -2,9 +2,11 @@ package clock;
 
 import java.awt.event.*;
 import java.io.File;
+import java.util.Calendar;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
@@ -42,6 +44,7 @@ public class Controller {
                     icsHandler.saveAlarmsToFile(model.getAlarms(), file);
                 }
             }
+           
         });
 
 
@@ -95,6 +98,12 @@ public class Controller {
         
         timer = new Timer(100, listener);
         timer.start();
+        
+        // Show the load alarms dialog at the start of the program
+        showLoadAlarmsDialog();
+        
+        //Call the startAlarmCheckingThread() method
+        startAlarmCheckingThread();
     }
     
     private void showAddAlarmDialog() {
@@ -104,7 +113,58 @@ public class Controller {
 
         if (newAlarm != null) {
             model.addAlarm(newAlarm);
+        }
     }
-}
+    
+    private void showLoadAlarmsDialog() {
+        JFileChooser fileChooser = new JFileChooser();
+        int returnValue = fileChooser.showOpenDialog(view.getFrame());
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            ICalendarHandler icsHandler = new ICalendarHandler();
+            List<Alarm> loadedAlarms = icsHandler.loadAlarmsFromFile(file);
+            model.clearAlarms();
+            for (Alarm alarm : loadedAlarms) {
+                model.addAlarm(alarm);
+            }
+        }
+    }
+
+    
+    private void startAlarmCheckingThread(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {                    
+                    Alarm nextAlarm = model.getNextAlarm();
+                    if(nextAlarm != null){
+                        Calendar currentTime = Calendar.getInstance();
+                        Calendar alarmTime = nextAlarm.getAlarmTime();
+                        
+                        if(currentTime.compareTo(alarmTime) >= 0){
+                            //Show dialog box
+                            JOptionPane.showMessageDialog(
+                                    view.getFrame(),
+                                    "Alarm Triggered: " + nextAlarm.toString(),
+                                    "Alarm",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                            
+                            //Remove the triggered alarm and update the next alarm label
+                            model.removeAlarm(nextAlarm);
+                            view.updateNextAlarmLabel(nextAlarm);
+                        }
+                    }
+                    
+                    try{
+                        //Wait for 1 second before checking again
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
 
 }

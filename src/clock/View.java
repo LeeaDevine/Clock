@@ -127,7 +127,7 @@ public class View implements Observer {
         pane.add(panel, BorderLayout.CENTER);
         
         // Initialize the nextAlarmLabel
-        nextAlarmLabel = new JLabel("Next Alarm: -");
+        nextAlarmLabel = new JLabel("Next Alarm: -", SwingConstants.CENTER);
         // Add the nextAlarmLabel to the JFrame's content pane
         pane.add(nextAlarmLabel, BorderLayout.SOUTH);
         

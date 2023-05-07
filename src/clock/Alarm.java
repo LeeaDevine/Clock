@@ -2,7 +2,7 @@ package clock;
 
 import java.util.Calendar;
 
-public class Alarm {
+public class Alarm implements Comparable<Alarm>{
     private Calendar alarmTime;
 
     public Alarm(Calendar alarmTime) {
@@ -15,6 +15,11 @@ public class Alarm {
 
     public void setAlarmTime(Calendar alarmTime) {
         this.alarmTime = alarmTime;
+    }
+    
+    @Override
+    public int compareTo(Alarm other){
+        return this.getAlarmTime().compareTo(other.getAlarmTime());
     }
 
     @Override
