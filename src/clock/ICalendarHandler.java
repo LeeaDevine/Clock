@@ -3,7 +3,6 @@ package clock;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import clock.Alarm;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
@@ -12,6 +11,7 @@ import java.io.FileReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import javax.swing.JOptionPane;
 
 /**
  * Handles iCalendar formats - save and load options
@@ -23,7 +23,26 @@ public class ICalendarHandler {
     public ICalendarHandler() {
     }
 
+    public static boolean isIcsFile(File file) {
+        String fileName = file.getName();
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+            String extension = fileName.substring(dotIndex + 1).toLowerCase();
+            return extension.equals("ics");
+        }
+        return false;
+    }
+    
     public void saveAlarmsToFile(List<Alarm> alarms, File file) {
+        if(!isIcsFile(file)){
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Invalid file type. Please choose a .ics file.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
@@ -53,6 +72,15 @@ public class ICalendarHandler {
 
     public List<Alarm> loadAlarmsFromFile(File file) {
         List<Alarm> alarmList = new ArrayList<>();
+        if(!isIcsFile(file)){
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Invalid file type. Please choose a .ics file.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return alarmList;
+        }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
