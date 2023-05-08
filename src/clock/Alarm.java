@@ -22,6 +22,14 @@ public class Alarm implements Comparable<Alarm>{
         this.alarmTime = alarmTime;
     }
     
+    public int getHour() {
+        return alarmTime.get(Calendar.HOUR_OF_DAY);
+    }
+
+    public int getMinute() {
+        return alarmTime.get(Calendar.MINUTE);
+    }
+    
     @Override
     public int compareTo(Alarm other){
         return this.getAlarmTime().compareTo(other.getAlarmTime());

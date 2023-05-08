@@ -2,6 +2,7 @@ package clock;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Observable;
@@ -19,6 +20,9 @@ public class Model extends Observable {
     int minute = 0;
     int second = 0;
     int oldSecond = 0;
+    
+    int nextAlarmHour;
+    int nextAlarmMinute;
     
     private PriorityQueue<Alarm> alarms;
     
@@ -75,7 +79,10 @@ public class Model extends Observable {
     }
     
     public List<Alarm> getAlarms() {
-        return new ArrayList<>(alarms);}
+        List<Alarm> alarmList = new ArrayList<>(alarms);
+        Collections.sort(alarmList);
+        return alarmList;
+    }
 
     public void clearAlarms() {
         alarms.clear();

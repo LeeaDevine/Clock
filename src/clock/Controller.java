@@ -187,7 +187,6 @@ public class Controller {
             icsHandler.saveAlarmsToFile(model.getAlarms(), file);
         }
     }
-
     
     private void startAlarmCheckingThread(){
         new Thread(new Runnable() {
@@ -215,8 +214,8 @@ public class Controller {
                     }
                     
                     try{
-                        //Wait for 1 second before checking again
-                        Thread.sleep(1000);
+                        //Wait for 0.1 seconds before checking again
+                        Thread.sleep(100);
                     } catch (InterruptedException e){
                         e.printStackTrace();
                     }
