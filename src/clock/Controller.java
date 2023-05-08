@@ -80,14 +80,14 @@ public class Controller {
         view.getEditAlarmsMenuItem().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Edit alarms logic
+                showEditAlarmDialog();
             }
         });
 
         view.getRemoveAlarmsMenuItem().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Remove alarms logic
+                showRemoveAlarmDialog();
             }
         });
         
@@ -118,6 +118,48 @@ public class Controller {
             view.updateNumberOfAlarmsLabel(model.getAlarms().size());
         }
     }
+    
+    private void showEditAlarmDialog() {
+        JFrame parentFrame = view.getFrame();
+        List<Alarm> alarms = model.getAlarms();
+        if (!alarms.isEmpty()) {
+            AlarmSelectionDialog alarmSelectionDialog = new AlarmSelectionDialog(parentFrame, alarms);
+            Alarm selectedAlarm = alarmSelectionDialog.showDialog();
+
+            if (selectedAlarm != null) {
+                model.removeAlarm(selectedAlarm);
+                AlarmDialog alarmDialog = new AlarmDialog(parentFrame);
+                Alarm updatedAlarm = alarmDialog.showDialog();
+
+                if (updatedAlarm != null) {
+                    model.addAlarm(updatedAlarm);
+                } else {
+                    model.addAlarm(selectedAlarm);
+                }
+
+                view.updateNumberOfAlarmsLabel(model.getAlarms().size());
+            }
+        } else {
+            JOptionPane.showMessageDialog(parentFrame, "No alarms available to edit.", "Edit Alarm", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void showRemoveAlarmDialog() {
+        JFrame parentFrame = view.getFrame();
+        List<Alarm> alarms = model.getAlarms();
+        if (!alarms.isEmpty()) {
+            AlarmSelectionDialog alarmSelectionDialog = new AlarmSelectionDialog(parentFrame, alarms);
+            Alarm selectedAlarm = alarmSelectionDialog.showDialog();
+
+            if (selectedAlarm != null) {
+                model.removeAlarm(selectedAlarm);
+                view.updateNumberOfAlarmsLabel(model.getAlarms().size());
+            }
+        } else {
+            JOptionPane.showMessageDialog(parentFrame, "No alarms available to remove.", "Remove Alarm", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
     
     private void showLoadAlarmsDialog() {
         JFileChooser fileChooser = new JFileChooser();

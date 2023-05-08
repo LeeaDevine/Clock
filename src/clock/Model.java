@@ -57,12 +57,12 @@ public class Model extends Observable {
             notifyObservers();
         }
     }
-    
+     
     public void addAlarm(Alarm alarm) {
     alarms.add(alarm);
     setChanged();
     notifyObservers();
-}
+    }
 
     public void removeAlarm(Alarm alarm) {
         alarms.remove(alarm);
@@ -75,8 +75,7 @@ public class Model extends Observable {
     }
     
     public List<Alarm> getAlarms() {
-        return new ArrayList<>(alarms);
-    }
+        return new ArrayList<>(alarms);}
 
     public void clearAlarms() {
         alarms.clear();
@@ -85,3 +84,4 @@ public class Model extends Observable {
     }
 
 }
+    

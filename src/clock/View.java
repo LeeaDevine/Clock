@@ -22,7 +22,7 @@ public class View implements Observer {
     Model model;
     Controller controller;
     
-    private JFrame frame;
+    private final JFrame frame;
     
     // Declare menu items as instance variables
     private JMenuItem saveAlarmsMenuItem;
@@ -170,6 +170,7 @@ public class View implements Observer {
      * @param o
      * @param arg
      */
+    @Override
     public void update(Observable o, Object arg) {
         //Repaint and show updated view
         panel.repaint();
