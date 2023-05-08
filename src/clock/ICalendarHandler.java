@@ -14,15 +14,26 @@ import java.util.Calendar;
 import javax.swing.JOptionPane;
 
 /**
- * Handles iCalendar formats - save and load options
+ * ICalendarHandler handles iCalendar (ICS) file formats for saving and loading alarms.
+ * This class provides utility methods to save a list of alarms to an ICS file and load alarms
+ * from an ICS file.
  * 
  * @author Lee Devine
  */
 public class ICalendarHandler {
 
+    /**
+     * Constructor for ICalendarHandler
+     */
     public ICalendarHandler() {
     }
 
+    /**
+     * Check if the given file is an iCalendar (.ics) file
+     * 
+     * @param file The file to check
+     * @return True, if the file is an .ics file, false otherwise
+     */
     public static boolean isIcsFile(File file) {
         String fileName = file.getName();
         int dotIndex = fileName.lastIndexOf('.');
@@ -33,6 +44,14 @@ public class ICalendarHandler {
         return false;
     }
     
+    /**
+     * Saves the given list of alarms to the specified ICS file. The alarms are formatted
+     * using the iCalendar VALARM component format with an AUDIO action and a TRIGGER value.
+     * If the file is not an ICS file, an error message is displayed.
+     * 
+     * @param alarms The list of alarms to save
+     * @param file The file to save the alarms in
+     */
     public void saveAlarmsToFile(List<Alarm> alarms, File file) {
         if(!isIcsFile(file)){
             JOptionPane.showMessageDialog(
@@ -46,9 +65,11 @@ public class ICalendarHandler {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+            //Write the VCALENDAR header
             bw.write("BEGIN:VCALENDAR");
             bw.newLine();
 
+            //Iterate through the alarms and write each VALARM component
             for (Alarm alarm : alarms) {
                 bw.write("BEGIN:VALARM");
                 bw.newLine();
@@ -64,12 +85,21 @@ public class ICalendarHandler {
                 bw.newLine();
             }
 
+            //Write VCALENDAR footer
             bw.write("END:VCALENDAR");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Loads alarms from the specified ICS file. This method reads the VALARM components
+     * and extracts the TRIGGER value to create a list of Alarm objects.
+     * If the file is not an ICS file, an error message is displayed.
+     * 
+     * @param file The file to load alarms from
+     * @return A list of alarms loaded form the file
+     */
     public List<Alarm> loadAlarmsFromFile(File file) {
         List<Alarm> alarmList = new ArrayList<>();
         if(!isIcsFile(file)){
@@ -85,11 +115,15 @@ public class ICalendarHandler {
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
+            //Read lines from the ICS file
             while ((line = br.readLine()) != null) {
+                //Check if the line starts a VALARM component
                 if (line.startsWith("BEGIN:VALARM")) {
                     Calendar alarmTime = null;
 
+                    //Read lines with the VALARM component
                     while (!(line = br.readLine()).startsWith("END:VALARM")) {
+                        //Check if the line starts with TRIGGER value
                         if (line.startsWith("TRIGGER;VALUE=DATE-TIME:")) {
                             String dateString = line.substring("TRIGGER;VALUE=DATE-TIME:".length());
                             alarmTime = Calendar.getInstance();
@@ -97,6 +131,7 @@ public class ICalendarHandler {
                         }
                     }
 
+                    //If the alarm time is not null, create alarm object and add it to the list
                     if (alarmTime != null) {
                         alarmList.add(new Alarm(alarmTime));
                     }
@@ -106,6 +141,7 @@ public class ICalendarHandler {
             e.printStackTrace();
         }
 
+        //Return the list of loaded alarms
         return alarmList;
     }
 }

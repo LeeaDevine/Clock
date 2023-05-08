@@ -11,6 +11,8 @@ import java.util.PriorityQueue;
 
 /**
  * Model class for the clock application
+ * Represents the clock's state, including the current time and alarm settings.
+ *
  * @author Lee Devine
  */
 
@@ -24,12 +26,12 @@ public class Model extends Observable {
     int nextAlarmHour;
     int nextAlarmMinute;
     
-    private PriorityQueue<Alarm> alarms;
+    private final PriorityQueue<Alarm> alarms;
     
     
     /**
      * Constructor for the Model Class
-     * Initializes the Model by updating the current time
+     * Initializes the Model by updating the current time and creating a priority queue for alarms.
      */
     public Model() {
         update();
@@ -62,32 +64,73 @@ public class Model extends Observable {
         }
     }
      
+    /**
+     * Adds an alarm to the priority queue of alarms.
+     * Notifies observers after the alarm has been added.
+     * 
+     * @param alarm Alarm to be added
+     */
     public void addAlarm(Alarm alarm) {
     alarms.add(alarm);
     setChanged();
     notifyObservers();
     }
 
+    /**
+     * Removes an alarm form the priority queue of alarms.
+     * Notifies observers after the alarm has been removed.
+     * 
+     * @param alarm Alarm to be removed
+     */
     public void removeAlarm(Alarm alarm) {
         alarms.remove(alarm);
         setChanged();
         notifyObservers();
     }
 
+    /**
+     * Retrieves the next alarm from the priority queue
+     * 
+     * @return The next Alarm object in the queue, or null if there are no alarms.
+     */
     public Alarm getNextAlarm() {
         return alarms.peek();
     }
     
+    /**
+     * Retrieves a list of alarms in the priority queue.
+     * 
+     * @return A list of Alarm objects, sorted by their alarm time. 
+     */
     public List<Alarm> getAlarms() {
         List<Alarm> alarmList = new ArrayList<>(alarms);
         Collections.sort(alarmList);
         return alarmList;
     }
 
+    /**
+     * Clears all alarms from the priority queue.
+     * Notifies observers after the alarms have been cleared.
+     */
     public void clearAlarms() {
         alarms.clear();
         setChanged();
         notifyObservers();
+    }
+    
+    /**
+     * Checks if a new alarm is a duplicate of an existing alarm
+     *
+     * @param newAlarm The Alarm object to be checked for duplicates
+     * @return true if the new alarm is a duplicate, false otherwise
+     */
+    public boolean isAlarmDuplicate(Alarm newAlarm){
+        for(Alarm alarm : alarms){
+            if(alarm.toString().equals(newAlarm.toString())){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

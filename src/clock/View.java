@@ -31,9 +31,14 @@ public class View implements Observer {
     private JMenuItem editAlarmsMenuItem;
     private JMenuItem removeAlarmsMenuItem;
     
+    //JLabel variables for nextAlarm and NumberOfAlarms
     private final JLabel nextAlarmLabel;
     private final JLabel numberOfAlarmsLabel;
     
+    /**
+     * Initializes the menu bar for the application
+     * @return The initialized menu bar.
+     */
     private JMenuBar initMenuBar() {
         // Create a menu bar
         JMenuBar menuBar = new JMenuBar();
@@ -66,30 +71,21 @@ public class View implements Observer {
         menuBar.add(fileMenu);
         menuBar.add(alarmsMenu);
 
+        // Return menu bar
         return menuBar;
         }
 
+    //Getter methods for menu items
+    public JMenuItem getSaveAlarmsMenuItem() {return saveAlarmsMenuItem;}
+    public JMenuItem getLoadAlarmsMenuItem() {return loadAlarmsMenuItem;}
+    public JMenuItem getAddAlarmMenuItem() {return addAlarmMenuItem;}
+    public JMenuItem getEditAlarmsMenuItem() {return editAlarmsMenuItem;}
+    public JMenuItem getRemoveAlarmsMenuItem() {return removeAlarmsMenuItem;}
     
-    public JMenuItem getSaveAlarmsMenuItem() {
-        return saveAlarmsMenuItem;
-    }
-
-    public JMenuItem getLoadAlarmsMenuItem() {
-        return loadAlarmsMenuItem;
-    }
-
-    public JMenuItem getAddAlarmMenuItem() {
-        return addAlarmMenuItem;
-    }
-
-    public JMenuItem getEditAlarmsMenuItem() {
-        return editAlarmsMenuItem;
-    }
-
-    public JMenuItem getRemoveAlarmsMenuItem() {
-        return removeAlarmsMenuItem;
-    }
-    
+    /**
+     * Updates the next alarm label with the provided Alarm object
+     * @param nextAlarm The next Alarm object to display
+     */
     public void updateNextAlarmLabel(Alarm nextAlarm) {
         if (nextAlarm != null) {
             nextAlarmLabel.setText("Next Alarm: " + nextAlarm.toString());
@@ -98,15 +94,22 @@ public class View implements Observer {
         }
     }
     
+    /**
+     * Updates the number of alarms label with the provided number.
+     * @param numberOfAlarms The number of alarms to display
+     */
     public void updateNumberOfAlarmsLabel(int numberOfAlarms){
         numberOfAlarmsLabel.setText("Number of Alarms: " + numberOfAlarms);
     }
 
     /**
-     *
-     * @param model
+     * Constructor for the View class
+     * Initializes the components and sets up the UI.
+     * 
+     * @param model The Model to be associated with this View.
      */
     public View(final Model model) {
+        
         this.model = model;
         
         //Create a new JFrame to display the clock.
@@ -143,14 +146,14 @@ public class View implements Observer {
         attachWindowListener();
     }
     
-    public JLabel getNumberOfAlarmsLabel(){
-        return numberOfAlarmsLabel;
-    }
+    //Getter methods for labels
+    public JLabel getNumberOfAlarmsLabel(){return numberOfAlarmsLabel;}
+    public JLabel getNextAlarmLabel(){return nextAlarmLabel;}
     
-    public JLabel getNextAlarmLabel(){
-        return nextAlarmLabel;
-    }
-    
+    /**
+     * Creates the southPanel containing next alarm and number of alarms labels.
+     * @return The initialized south panel.
+     */
     private JPanel createSouthPanel(){
         JPanel southPanel = new JPanel(new BorderLayout());
         
@@ -165,10 +168,9 @@ public class View implements Observer {
     }
     
     /**
-     * Update the view with the new alarm information
-     * 
-     * @param o
-     * @param arg
+     * Update the view with the new alarm information.
+     * @param o The Observable object that triggered the update.
+     * @param arg The argument passed to the update method.
      */
     @Override
     public void update(Observable o, Object arg) {
@@ -182,10 +184,12 @@ public class View implements Observer {
         updateNumberOfAlarmsLabel(model.getAlarms().size());
     }
     
-    public JFrame getFrame(){
-        return frame;
-    }
+    //Getter for the JFrame
+    public JFrame getFrame(){return frame;}
     
+    /**
+     * Attaches a window listener to handle saving alarms on exit.
+     */
     private void attachWindowListener(){
         frame.addWindowListener(new WindowAdapter(){
             @Override
@@ -205,6 +209,10 @@ public class View implements Observer {
         });
     }
 
+    /**
+     * Sets the Controller associated with this View.
+     * @param controller The Controller to be associated with this View.
+     */
     void setController(Controller controller) {
         this.controller = controller;
     }

@@ -8,7 +8,8 @@ import java.awt.event.ActionListener;
 import java.util.Calendar;
 
 /**
- * Dialog box dealing with user alarm interaction
+ * AlarmDialog class creates a dialog box for the user to interact with 
+ * when setting an alarm
  * 
  * @author Lee Devine
  */
@@ -22,9 +23,14 @@ public class AlarmDialog extends JDialog {
 
     private Alarm alarm;
 
-    public AlarmDialog(Frame owner) {
+    /**
+     * Constructor for AlarmDialog
+     * @param owner The frame instance that owns this dialog
+     * @param selectedAlarm The selectedAlarm from edit option, if available.
+     */
+    public AlarmDialog(Frame owner, Alarm selectedAlarm) {
         super(owner, "Set Alarm", true);
-        initComponents();
+        initComponents(selectedAlarm);
         
         setLocationRelativeTo(owner);
     }
@@ -32,17 +38,29 @@ public class AlarmDialog extends JDialog {
     /**
      * Initialize components of the Dialog Box
      */
-    private void initComponents() {
+    private void initComponents(Alarm selectedAlarm) {
         // Initialize components
-        hourSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-        minuteSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
-        secondSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
+        int selectedHour = selectedAlarm != null ? selectedAlarm.getHour() : 0;
+        int selectedMinute = selectedAlarm != null ? selectedAlarm.getMinute() : 0;
+        int selectedSecond = selectedAlarm != null ? selectedAlarm.getSecond() : 0;
+        
+        hourSpinner = new JSpinner(new SpinnerNumberModel(selectedHour, 0, 23, 1));
+        minuteSpinner = new JSpinner(new SpinnerNumberModel(selectedMinute, 0, 59, 1));
+        secondSpinner = new JSpinner(new SpinnerNumberModel(selectedSecond, 0, 59, 1));
         setButton = new JButton("Set");
         cancelButton = new JButton("Cancel");
 
+        //Disable editing in the spinners' text fields
         ((JSpinner.DefaultEditor) hourSpinner.getEditor()).getTextField().setEditable(false);
         ((JSpinner.DefaultEditor) minuteSpinner.getEditor()).getTextField().setEditable(false);
         ((JSpinner.DefaultEditor) secondSpinner.getEditor()).getTextField().setEditable(false);
+        
+        //Get hold of values for when user edits selected alarm
+        if(selectedAlarm != null){
+            hourSpinner.setValue(selectedAlarm.getHour());
+            minuteSpinner.setValue(selectedAlarm.getMinute());
+            secondSpinner.setValue(selectedAlarm.getSecond());
+        }
         
         // Layout components
         setLayout(new FlowLayout());
@@ -68,6 +86,18 @@ public class AlarmDialog extends JDialog {
                 alarmTime.set(Calendar.HOUR_OF_DAY, hour);
                 alarmTime.set(Calendar.MINUTE, minute);
                 alarmTime.set(Calendar.SECOND, second);
+                
+                Calendar currentTime = Calendar.getInstance();
+                
+                //If alarmTime is set before currentTime -> move to next day
+                if(alarmTime.before(currentTime)){
+                    alarmTime.add(Calendar.DATE, 1);
+                    JOptionPane.showMessageDialog(AlarmDialog.this,
+                            "The alarm time has already passed today. The Alarm has been set for tomorrow",
+                            "Alarm Set",
+                            JOptionPane.INFORMATION_MESSAGE
+                            );
+                }
 
                 alarm = new Alarm(alarmTime);
                 setVisible(false);
@@ -86,37 +116,11 @@ public class AlarmDialog extends JDialog {
     }
 
     /**
-     * Show Dialog
-     * @return 
+     * Displays the dialog and returns the created alarm
+     * @return The created alarm object, or null if cancelled.
      */
     public Alarm showDialog() {
         setVisible(true);
         return alarm;
-    }
-    
-    //Make sure user stay within constraints of JSpinner max and min values
-    private static class ConstrainedSpinnerNumberModel extends SpinnerNumberModel{
-        
-        public ConstrainedSpinnerNumberModel(int value, int minimum, int maximum, int stepSize){
-            super(value, minimum, maximum, stepSize);
-        }
-        
-        @Override
-        public void setValue(Object value){
-            if(value instanceof Integer){
-                int intValue = (Integer) value;
-                int minValue = (Integer) getMinimum();
-                int maxValue = (Integer) getMaximum();
-                
-                if(intValue < minValue){
-                    intValue = minValue;
-                } else if(intValue > maxValue){
-                    intValue = maxValue;
-                }
-                super.setValue(intValue);
-            }else{
-                super.setValue(value);
-            }
-        }
     }
 }

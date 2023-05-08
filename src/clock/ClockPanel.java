@@ -115,6 +115,13 @@ public class ClockPanel extends JPanel {
         y1 = y0 - radius * Math.sin(theta);
         gg.draw(new Line2D.Double(x0, y0, x1, y1));
         
+        
+        /**
+         * Draw component for nextAlarm
+         * 
+         * If nextAlarm is null -> do not display hands
+         * else -> display nextAlarm
+         */
         Alarm nextAlarm = model.getNextAlarm();
         if (nextAlarm != null) {
             model.nextAlarmHour = nextAlarm.getHour();
