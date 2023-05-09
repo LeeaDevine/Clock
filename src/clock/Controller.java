@@ -226,31 +226,48 @@ public class Controller {
      * Updates the View with the loaded alarms.
      */
     private void showLoadAlarmsDialog() {
-    JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    fileChooser.setFileFilter(new FileNameExtensionFilter("ICS Files", "ics"));
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-    int returnValue = fileChooser.showOpenDialog(view.getFrame());
-
-    if (returnValue == JFileChooser.APPROVE_OPTION) {
-        File file = fileChooser.getSelectedFile();
         ICalendarHandler icsHandler = new ICalendarHandler();
-        List<Alarm> loadedAlarms = icsHandler.loadAlarmsFromFile(file);
 
-        if (loadedAlarms != null) {  // if the loadedAlarms is not null, process the alarms
-            model.clearAlarms();
-            for (Alarm alarm : loadedAlarms) {
-                model.addAlarm(alarm);
+        while(true){
+            int returnValue = fileChooser.showOpenDialog(null);
+
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+
+                if (icsHandler.isIcsFile(file)) {  // Check if it's a .ics file
+                    List<Alarm> loadedAlarms = icsHandler.loadAlarmsFromFile(file);
+
+                    if (loadedAlarms != null) {  // if the loadedAlarms is not null, process the alarms
+                        model.clearAlarms();
+                        for (Alarm alarm : loadedAlarms) {
+                            model.addAlarm(alarm);
+                        }
+                        view.updateNumberOfAlarmsLabel(model.getAlarms().size());
+
+                        // Update file name label
+                        view.updateFileNameLabel(file.getName());
+
+                        break;  // break the loop as a valid .ics file has been loaded
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Invalid file type. Please choose a .ics file.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                    // continue the loop as a valid .ics file has not been loaded
+                }
+            } else if (returnValue == JFileChooser.CANCEL_OPTION) {
+                break;  // break the loop as the user cancelled the operation
             }
-            view.updateNumberOfAlarmsLabel(model.getAlarms().size());
-
-            // Update file name label
-            view.updateFileNameLabel(file.getName());
-        }  // if the loadedAlarms is null, do nothing
+        }
     }
-}
 
-    
+
     /**
      * Prompts the user to save alarms to a file when exiting the application.
      * Opens a file chooser for the user to select a destination file for saving alarm data.

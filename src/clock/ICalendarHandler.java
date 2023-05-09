@@ -101,7 +101,9 @@ public class ICalendarHandler {
      * @return A list of alarms loaded form the file
      */
     public List<Alarm> loadAlarmsFromFile(File file) {
+        
         List<Alarm> alarmList = new ArrayList<>();
+        
         if(!isIcsFile(file)){
             JOptionPane.showMessageDialog(
                     null,
@@ -109,8 +111,9 @@ public class ICalendarHandler {
                     "Error",
                     JOptionPane.ERROR_MESSAGE
             );
-            return null;
+            return alarmList;
         }
+        
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
