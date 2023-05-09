@@ -198,13 +198,14 @@ public class View implements Observer {
                         frame,
                         "Would you like to save the file before closing program?",
                         "Save Alarm List",
-                        JOptionPane.YES_NO_CANCEL_OPTION
+                        JOptionPane.YES_NO_OPTION
                 );
                 
+                //If User selects YES Option -> Proceed to save a file.
                 if(result == JOptionPane.YES_OPTION){
                     //Call the save method from the controller
                     controller.saveAlarmsOnExit();
-                }
+                } 
             }
         });
     }

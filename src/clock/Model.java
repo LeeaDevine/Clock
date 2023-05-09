@@ -71,9 +71,9 @@ public class Model extends Observable {
      * @param alarm Alarm to be added
      */
     public void addAlarm(Alarm alarm) {
-    alarms.add(alarm);
-    setChanged();
-    notifyObservers();
+        alarms.add(alarm);
+        setChanged();
+        notifyObservers();
     }
 
     /**

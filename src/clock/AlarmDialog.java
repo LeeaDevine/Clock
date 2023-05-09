@@ -37,6 +37,7 @@ public class AlarmDialog extends JDialog {
     
     /**
      * Initialize components of the Dialog Box
+     * @param selectedAlarm The selectedAlarm from edit option
      */
     private void initComponents(Alarm selectedAlarm) {
         // Initialize components
