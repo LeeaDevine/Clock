@@ -109,7 +109,7 @@ public class ICalendarHandler {
                     "Error",
                     JOptionPane.ERROR_MESSAGE
             );
-            return alarmList;
+            return null;
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 

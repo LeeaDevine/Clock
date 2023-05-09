@@ -34,6 +34,7 @@ public class View implements Observer {
     //JLabel variables for nextAlarm and NumberOfAlarms
     private final JLabel nextAlarmLabel;
     private final JLabel numberOfAlarmsLabel;
+    private final JLabel fileNameLabel;
     
     /**
      * Initializes the menu bar for the application
@@ -101,6 +102,19 @@ public class View implements Observer {
     public void updateNumberOfAlarmsLabel(int numberOfAlarms){
         numberOfAlarmsLabel.setText("Number of Alarms: " + numberOfAlarms);
     }
+    
+    /**
+     * Updates the file name label with the provided number.
+     * @param fileName The fileName of the loaded file
+     */
+    public void updateFileNameLabel(String fileName){
+        if(fileName != null){
+            fileNameLabel.setText(" Loaded File: " + fileName);
+        } else{
+            fileNameLabel.setText("No file loaded: -");
+        }
+       
+    }
 
     /**
      * Constructor for the View class
@@ -134,9 +148,11 @@ public class View implements Observer {
         //Create the new JLabels with empty strings
         nextAlarmLabel = new JLabel("");
         numberOfAlarmsLabel = new JLabel("");
+        fileNameLabel = new JLabel("");
         
         //Add the southPanel JPanel to the JFrame
         pane.add(createSouthPanel(), BorderLayout.SOUTH);
+        pane.add(fileNameLabel, BorderLayout.NORTH);
         
         //Pack the components and set the JFrame visible
         frame.pack();

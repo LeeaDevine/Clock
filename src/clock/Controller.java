@@ -8,6 +8,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * Controller class for the clock application.
@@ -225,20 +226,30 @@ public class Controller {
      * Updates the View with the loaded alarms.
      */
     private void showLoadAlarmsDialog() {
-        JFileChooser fileChooser = new JFileChooser();
-        int returnValue = fileChooser.showOpenDialog(view.getFrame());
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    fileChooser.setFileFilter(new FileNameExtensionFilter("ICS Files", "ics"));
 
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            ICalendarHandler icsHandler = new ICalendarHandler();
-            List<Alarm> loadedAlarms = icsHandler.loadAlarmsFromFile(file);
+    int returnValue = fileChooser.showOpenDialog(view.getFrame());
+
+    if (returnValue == JFileChooser.APPROVE_OPTION) {
+        File file = fileChooser.getSelectedFile();
+        ICalendarHandler icsHandler = new ICalendarHandler();
+        List<Alarm> loadedAlarms = icsHandler.loadAlarmsFromFile(file);
+
+        if (loadedAlarms != null) {  // if the loadedAlarms is not null, process the alarms
             model.clearAlarms();
             for (Alarm alarm : loadedAlarms) {
                 model.addAlarm(alarm);
             }
             view.updateNumberOfAlarmsLabel(model.getAlarms().size());
-        }
+
+            // Update file name label
+            view.updateFileNameLabel(file.getName());
+        }  // if the loadedAlarms is null, do nothing
     }
+}
+
     
     /**
      * Prompts the user to save alarms to a file when exiting the application.
